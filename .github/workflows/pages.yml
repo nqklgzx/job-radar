@@ -9,6 +9,7 @@ on:
       - "data/notify_preview.md"
       - "scripts/export_html.py"
       - "job_radar/**"
+      - "config/**"
       - ".github/workflows/pages.yml"
       - "README.md"
   workflow_run:
@@ -28,6 +29,9 @@ concurrency:
 jobs:
   deploy:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -54,3 +58,4 @@ jobs:
           path: public
 
       - uses: actions/deploy-pages@v4
+        id: deployment
