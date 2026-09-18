@@ -52,5 +52,6 @@ jobs:
             echo "无新增/变更岗位，跳过 commit"
           else
             git commit -m "chore(data): sync jobs $(date -u +%F)"
+            git pull --rebase origin main
             git push
           fi

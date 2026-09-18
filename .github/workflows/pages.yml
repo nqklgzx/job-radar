@@ -42,7 +42,7 @@ jobs:
           python-version: "3.12"
 
       - name: Export HTML
-        run: python3 scripts/export_html.py
+        run: python3 scripts/sync_plan.py rescore
 
       - name: Prepare Pages artifact
         run: |
