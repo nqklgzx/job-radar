@@ -85,6 +85,8 @@ def role_signal_score(title: str, jd_text: str) -> Tuple[int, List[str]]:
     tags: List[str] = []
 
     for label, words in EMBEDDED_ROLES:
+        if label == "嵌入式软件" and "硬件" in title_low and "软件" not in title_low:
+            continue
         if any(keyword_match(k, title_low) for k in words):
             tags.append(label)
     if tags:

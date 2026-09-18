@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Dict, List
+import re
 
 from .models import Job
 from .normalize import normalize_city
@@ -63,6 +64,12 @@ def score_job(job: Job, profile: Dict) -> ScoreResult:
     tags += role_tags
     if not role_tags:
         score -= 45
+    if role_tags and any(k in text for k in ("校招", "校园招聘", "应届", "实习", "intern", "graduate")):
+        score += 30
+        tags.append("校招/实习优先")
+    if re.search(r"资深|高级|专家|首席|总监|架构师|\bsenior\b|\bprincipal\b|\bstaff\b", job.title, re.I):
+        score -= 55
+        tags.append("经验要求待核实")
     if has_target_role_signal(job.title) and ("医疗" in text or "生物医学工程" in text):
         score += 15
         tags.append("医工匹配")
