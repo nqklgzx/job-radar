@@ -168,6 +168,8 @@ def score_job(job: Job, profile: Dict) -> ScoreResult:
     # 公司、行业与届别不能把纯销售/产品等无目标角色岗位抬成高匹配。
     if not role_tags:
         score = min(score, 59)
+    if any(k in job.title for k in ("销售", "运营", "产品经理", "GTM", "市场")) and not any(k in job.title for k in ("研发", "开发", "固件开发", "firmware development")):
+        score = min(score, 59)
     return ScoreResult(score=max(0, score),
                        tags=list(dict.fromkeys(tags)),
                        risk_flags=risk)

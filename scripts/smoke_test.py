@@ -143,7 +143,7 @@ def test_embedded_offline() -> None:
         check(title + " 高匹配", result.score >= 80, str(result.score))
         job.match_score, job.tags = result.score, result.tags
         rows.append(job.to_dict())
-    for title in ("Java 后端", "销售", "产品运营"):
+    for title in ("Java 后端", "销售", "产品运营", "紧固件工程师", "硬件销售工程师", "高级TOC硬件产品GTM经理"):
         job = Job(job_id=title, dedup_key=title, source_id="test", company_name="测试企业",
                   title=title, jd_text="2027届 医疗器械 STM32 C++", location="深圳", source_confidence=100)
         check(title + " 明显降权", score_job(job, profile).score < 60)

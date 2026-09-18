@@ -98,6 +98,8 @@ def keyword_match(keyword: str, text: str) -> bool:
     """技能词边界；单独字母 C 只在明确编程语境中计分。"""
     k = keyword.lower()
     low = (text or "").lower()
+    if k == "固件":
+        return bool(re.search(r"(?<!紧)固件", low))
     if k == "c":
         return bool(re.search(r"(?<![a-z0-9])c\s*(?:语言|编程|开发|language|programming|/\s*c\+\+)", low))
     if re.fullmatch(r"[a-z0-9 +/#.\-]+", k):
