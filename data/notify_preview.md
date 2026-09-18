@@ -1,7 +1,7 @@
 # Job Radar｜2026-09-18 新增机会
 
-未推新增 1584 条，其中 2027/2028届 133 条。
-高匹配岗位 166 条；医疗器械研发 0 条；7天内截止 7 条。
+未推新增 1646 条，其中 2027/2028届 143 条。
+高匹配岗位 208 条；医疗器械研发 0 条；7天内截止 7 条。
 已自动过滤历史推送 2 条。
 
 信息台：https://nqklgzx.github.io/job-radar/
@@ -9,21 +9,18 @@
 线索池：牛客待审核 138 条；信源需关注 10 个。
 
 ## 新增优先看
+- 地平线｜【2027届校招】嵌入式系统软件工程师（感知通路）
+  嵌入式软件｜匹配 213｜2026-09-25，剩 7 天
+  https://wecruit.hotjob.cn/SU6409ef49bef57c635fd390a6/pb/posDetail.html?postId=6a7933ea1ad6db7cf8fbb975
 - 字节跳动｜DSP固件工程师 - PICO
   固件/MCU｜匹配 203｜缺截止
   https://jobs.bytedance.com/experienced/position/7675265568937330949/detail
-- 地平线｜【2027届校招】嵌入式系统软件工程师（感知通路）
-  嵌入式软件｜匹配 203｜2026-09-25，剩 7 天
-  https://wecruit.hotjob.cn/SU6409ef49bef57c635fd390a6/pb/posDetail.html?postId=6a7933ea1ad6db7cf8fbb975
 - 地平线｜【2027届校招】机器人运动控制工程师
-  硬件研发｜匹配 181｜2026-09-25，剩 7 天
+  硬件研发｜匹配 191｜2026-09-25，剩 7 天
   https://wecruit.hotjob.cn/SU6409ef49bef57c635fd390a6/pb/posDetail.html?postId=6a7933e868cc6f624f377168
 - 东风汽车集团有限公司｜嵌入式软件工程师-跃创科技
   嵌入式软件｜匹配 177｜2026-12-16，剩 89 天
   https://www.iguopin.com/job/detail?id=218488954209435833
-- 智能汽车制造产业链专项引才计划｜紧固件工程师
-  固件/MCU｜匹配 177｜2026-12-31，剩 104 天
-  https://www.iguopin.com/job/detail?id=217909161306883623
 - 中国移动智慧家庭运营中心｜嵌入式开发工程师
   嵌入式软件｜匹配 177｜2026-10-10，剩 22 天
   https://www.iguopin.com/job/detail?id=216577545217245965
@@ -33,6 +30,9 @@
 - 字节跳动｜机器人嵌入式驱动工程师-Seed
   嵌入式软件｜匹配 172｜缺截止
   https://jobs.bytedance.com/experienced/position/7631163600590506245/detail
+- 中国东方电气集团有限公司｜嵌入式控制工程师
+  嵌入式软件｜匹配 169｜2026-12-08，剩 81 天
+  https://www.iguopin.com/job/detail?id=217763060293568043
 
 ## 新增医疗器械研发
 - 暂无
@@ -48,10 +48,10 @@
   硬件研发｜匹配 137｜2026-09-23，剩 5 天
   https://www.iguopin.com/job/detail?id=218487779351330997
 - 地平线｜【2027届校招】嵌入式系统软件工程师（感知通路）
-  嵌入式软件｜匹配 203｜2026-09-25，剩 7 天
+  嵌入式软件｜匹配 213｜2026-09-25，剩 7 天
   https://wecruit.hotjob.cn/SU6409ef49bef57c635fd390a6/pb/posDetail.html?postId=6a7933ea1ad6db7cf8fbb975
 - 地平线｜【2027届校招】机器人运动控制工程师
-  硬件研发｜匹配 181｜2026-09-25，剩 7 天
+  硬件研发｜匹配 191｜2026-09-25，剩 7 天
   https://wecruit.hotjob.cn/SU6409ef49bef57c635fd390a6/pb/posDetail.html?postId=6a7933e868cc6f624f377168
 
 ## 新增待补截止
@@ -61,15 +61,15 @@
 - 字节跳动｜机器人嵌入式驱动工程师-Seed
   嵌入式软件｜匹配 172｜缺截止
   https://jobs.bytedance.com/experienced/position/7631163600590506245/detail
+- 深圳大漠大智控技术有限公司｜【27届校招】mcu嵌入式开发工程师
+  嵌入式软件｜匹配 166｜缺截止
+  https://www.ncss.cn/student/jobs/jobsdetail/index.html?jobId=NigVq4yUVMoFLarUSRKadx
+- 广东奥普特科技股份有限公司｜嵌入式助理工程师（2027校招）
+  嵌入式软件｜匹配 154｜缺截止
+  https://www.ncss.cn/student/jobs/jobsdetail/index.html?jobId=VSPRAk84M4pQx6nP4Eyn8A
 - 中景芯创集成电路（北京）有限公司｜2027届校园招聘宣讲会
   硬件研发｜匹配 152｜缺截止
   https://www.job.sjtu.edu.cn/career/xjhxx/view/237545141257244672
-- 腾讯｜云-服务器硬件高级工程师
-  硬件研发｜匹配 109｜缺截止
-  http://careers.tencent.com/jobdesc.html?postId=2077641357278752768
-- 武汉新芯集成电路股份有限公司｜职位: 500个 进行中 地点：长安校区C楼427 时间：2026-09-18 19:00-21:00（周五）
-  硬件研发｜匹配 104｜缺截止
-  https://job.xidian.edu.cn/teachin/view/id/126966
-- 深南电路股份有限公司｜深南电路股份有限公司
-  硬件研发｜匹配 84｜缺截止
-  https://career.csu.edu.cn/teachin/view/id/118354
+- 北京平治东方科技股份有限公司｜BSP驱动开发实习生
+  BSP/Driver｜匹配 152｜缺截止
+  https://www.ncss.cn/student/jobs/jobsdetail/index.html?jobId=78FkMmYc4fAJ6e4nWnpqpW
