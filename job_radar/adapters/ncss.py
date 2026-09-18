@@ -21,8 +21,10 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 from typing import List
+from urllib.parse import quote
 
 from ..models import RawJob
+from ..keyword_config import role_focus_keywords
 from . import register
 from .http import get_json
 
@@ -58,14 +60,18 @@ def fetch(endpoint: str) -> List[RawJob]:
     jobs: List[RawJob] = []
     seen = set()
     # 两路：通用(全部) + jobType=02(实习)。实习路把标题标注"（实习）"以进实习 Tab。
-    for jtype, pages, is_intern in (("", PAGES, False), ("02", 4, True)):
+    searches = [("", PAGES, False, ""), ("02", 4, True, "")]
+    searches += [("", 1, False, kw) for kw in role_focus_keywords()]
+    for jtype, pages, is_intern, keyword in searches:
         for page in range(1, pages + 1):
-            params = (f"?jobType={jtype}&areaCode=&jobName=&monthPay=&industrySectors=&property="
+            params = (f"?jobType={jtype}&areaCode=&jobName={quote(keyword)}&monthPay=&industrySectors=&property="
                       f"&categoryCode=&memberLevel=&recruitType=&offset={page}&limit={PAGE_SIZE}"
                       f"&keyUnits=&degreeCode=&sourcesName=0&sourcesType=&_=1")
             try:
                 data = get_json(ajax + params, headers=headers)
             except Exception:  # noqa: BLE001 — 单页失败不影响整体
+                if not jobs:
+                    raise
                 break
             lst = (data.get("data") or {}).get("list") or []
             if not lst:
