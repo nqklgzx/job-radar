@@ -2,7 +2,7 @@
   "ashby-posthog": {
     "consecutive_failures": 0,
     "status": "active",
-    "last_success_at": "2026-09-18T08:10:30.708413+00:00",
+    "last_success_at": "2026-09-18T08:24:08.499545+00:00",
     "last_error": "",
     "last_count": 9,
     "peak_count": 21,
@@ -11,9 +11,9 @@
   "gh-gitlab": {
     "consecutive_failures": 0,
     "status": "active",
-    "last_success_at": "2026-09-18T08:10:50.221992+00:00",
+    "last_success_at": "2026-09-18T08:24:08.789477+00:00",
     "last_error": "",
-    "last_count": 216,
+    "last_count": 215,
     "peak_count": 229,
     "alert": ""
   },
@@ -81,30 +81,30 @@
     "alert": ""
   },
   "edu-fudan": {
-    "consecutive_failures": 1,
+    "consecutive_failures": 0,
     "status": "active",
-    "last_success_at": "2026-09-16T06:46:20.985517+00:00",
-    "last_error": "Error: It looks like you are using Playwright Sync API inside the asyncio loop.\nPlease use the Async API instead.",
+    "last_success_at": "2026-09-18T08:24:31.131299+00:00",
+    "last_error": "",
     "last_count": 40,
     "peak_count": 40,
     "alert": ""
   },
   "edu-nju": {
-    "consecutive_failures": 1,
+    "consecutive_failures": 0,
     "status": "active",
-    "last_success_at": "2026-09-16T06:46:35.646178+00:00",
-    "last_error": "Error: It looks like you are using Playwright Sync API inside the asyncio loop.\nPlease use the Async API instead.",
+    "last_success_at": "2026-09-18T08:24:45.681038+00:00",
+    "last_error": "",
     "last_count": 0,
     "peak_count": 11,
     "alert": "抓取量跌为 0（历史峰值 11，疑似改版/失效）"
   },
   "edu-sjtu": {
-    "consecutive_failures": 1,
+    "consecutive_failures": 0,
     "status": "active",
-    "last_success_at": "2026-09-16T06:47:05.723275+00:00",
-    "last_error": "Error: It looks like you are using Playwright Sync API inside the asyncio loop.\nPlease use the Async API instead.",
-    "last_count": 86,
-    "peak_count": 86,
+    "last_success_at": "2026-09-18T08:25:17.898020+00:00",
+    "last_error": "",
+    "last_count": 99,
+    "peak_count": 99,
     "alert": ""
   },
   "edu-zju": {
@@ -153,10 +153,10 @@
     "alert": ""
   },
   "cn-nio": {
-    "consecutive_failures": 1,
+    "consecutive_failures": 0,
     "status": "active",
-    "last_success_at": "2026-09-16T06:46:06.311662+00:00",
-    "last_error": "Error: BrowserType.launch: Executable doesn't exist at C:\\Users\\NQK\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1228\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "last_success_at": "2026-09-18T08:24:21.070110+00:00",
+    "last_error": "",
     "last_count": 10,
     "peak_count": 10,
     "alert": ""
@@ -288,29 +288,29 @@
     "alert": ""
   },
   "nk-intern": {
-    "consecutive_failures": 1,
+    "consecutive_failures": 0,
     "status": "active",
-    "last_success_at": "2026-09-16T06:48:52.719580+00:00",
-    "last_error": "Error: It looks like you are using Playwright Sync API inside the asyncio loop.\nPlease use the Async API instead.",
-    "last_count": 19,
+    "last_success_at": "2026-09-18T08:26:49.334216+00:00",
+    "last_error": "",
+    "last_count": 20,
     "peak_count": 20,
     "alert": ""
   },
   "nk-campus": {
-    "consecutive_failures": 1,
+    "consecutive_failures": 0,
     "status": "active",
-    "last_success_at": "2026-09-16T06:50:12.785749+00:00",
-    "last_error": "Error: It looks like you are using Playwright Sync API inside the asyncio loop.\nPlease use the Async API instead.",
+    "last_success_at": "2026-09-18T08:28:12.547553+00:00",
+    "last_error": "",
     "last_count": 20,
     "peak_count": 21,
     "alert": ""
   },
   "sxs-intern": {
-    "consecutive_failures": 1,
+    "consecutive_failures": 0,
     "status": "active",
-    "last_success_at": "2026-09-16T06:50:38.105441+00:00",
-    "last_error": "Error: It looks like you are using Playwright Sync API inside the asyncio loop.\nPlease use the Async API instead.",
-    "last_count": 154,
+    "last_success_at": "2026-09-18T08:28:38.463858+00:00",
+    "last_error": "",
+    "last_count": 153,
     "peak_count": 154,
     "alert": ""
   },

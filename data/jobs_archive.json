@@ -1,5 +1,17 @@
 [
   {
+    "dedup_key": "b753508b3322a2c4",
+    "source_id": "gh-gitlab",
+    "company_name": "gitlab",
+    "title": "Intermediate Backend Engineer",
+    "location": "Bangalore, India",
+    "official_url": "https://job-boards.greenhouse.io/gitlab/jobs/8736877002",
+    "first_seen": "2026-09-06T06:30:04.646005+00:00",
+    "last_seen": "2026-09-18T08:10:27.304870+00:00",
+    "archived_at": "2026-09-18T08:24:08.418447+00:00",
+    "match_score": 0
+  },
+  {
     "dedup_key": "cc3d39f41c77bd73",
     "source_id": "cn-jd",
     "company_name": "京东",
@@ -119982,18 +119994,6 @@
     "title": "3D动作游戏《狩》-高级内容营销经理",
     "location": "深圳",
     "official_url": "http://careers.tencent.com/jobdesc.html?postId=2001488445175910400",
-    "first_seen": "2026-09-02T00:49:40.963993+00:00",
-    "last_seen": "2026-09-03T00:57:32.960705+00:00",
-    "archived_at": "2026-09-04T00:47:44.482352+00:00",
-    "match_score": 90
-  },
-  {
-    "dedup_key": "e4be1d9da57fc4d7",
-    "source_id": "cn-tencent",
-    "company_name": "腾讯",
-    "title": "《王者荣耀世界》资深战斗策划(角色向)",
-    "location": "上海",
-    "official_url": "http://careers.tencent.com/jobdesc.html?postId=1968170095121424384",
     "first_seen": "2026-09-02T00:49:40.963993+00:00",
     "last_seen": "2026-09-03T00:57:32.960705+00:00",
     "archived_at": "2026-09-04T00:47:44.482352+00:00",
