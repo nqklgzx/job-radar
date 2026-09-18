@@ -69,7 +69,7 @@ def build_records():
         dl = fmt_date(j.get("deadline"))
         title = s(j.get("title"))
         jd = s(j.get("jd_text"))[:1200]
-        kind = wr.kind(sid, title)
+        kind = wr.kind(sid, title + " " + jd)
         stage = wr.stage(title, jd)
         c27 = wr.is_2027_cycle(sid, kind, title, jd, pub, stage)
         cat = wr.category(sid)
@@ -85,7 +85,7 @@ def build_records():
             "cat": cat,
             "kind": kind,
             "stage": stage,
-            "cyc": "2027" if c27 else "",
+            "cyc": "2027" if c27 else ("2028" if re.search(r"(?:2028\s*届|28\s*届|2028校园|2028校招|2028 campus|2028 graduate)", title + " " + jd, re.I) else ""),
             "conv": bool(any(k in title or k in jd.lower() for k in wr.CONVERT_KW)),
             "ind": wr.industry_display(s(j.get("industry"))),
             "gv": sid in ("gov-sasac", "gov-qyzp", "cn-iguopin"),   # 央国企核心源
@@ -207,7 +207,7 @@ def build_inbox():
 _TEMPLATE = """<!DOCTYPE html>
 <html lang="zh-CN"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>招聘雷达工作台</title>
+<title>医疗嵌入式招聘雷达</title>
 <style>
 /* 莫兰迪 / 小红书 ins 风：冷调留白 · 低饱和鼠尾草绿点缀 */
 :root{
@@ -383,7 +383,7 @@ main.station{display:block;max-width:1240px}
 }
 </style></head><body>
 <header>
-  <h1>招聘雷达工作台 <span class="stat" id="gen"></span></h1>
+  <h1>医疗嵌入式招聘雷达 <span class="stat" id="gen"></span></h1>
   <div class="stat" id="summary"></div>
   <div class="filters">
     <input id="q" placeholder="限定专业 / 关键词匹配（空格分隔多词，搜 职位·公司·JD 要求）">
@@ -404,7 +404,7 @@ const INBOX = __INBOX__;
 const GEN = "__GEN__";
 const CATS = ["国聘","实习平台","群推送","国家平台","高校","大厂官网","海外ATS","其他"];
 const REGION_ORDER = ["广东","浙江","江苏","上海","湖南","北京","远程/海外","其他"];
-let fCat=new Set(), fInd=new Set(), fMin=0, fSort="focus", fQ="", tab="station", rtab="all";
+let fCat=new Set(), fInd=new Set(), fMin=0, fSort="focus", fQ="", tab="hi", rtab="all";
 const RENDER_CAP=400;
 const MAXFS = DATA.reduce((m,r)=>r.fs>m?r.fs:m, "");  // 最新入库时间 = 本次新增
 const groupKey=r=>r.group||r.id;
@@ -438,52 +438,32 @@ function hasTag(r,t){return (r.tags||[]).includes(t);}
 function hasAnyTag(r,arr){return arr.some(t=>hasTag(r,t));}
 function convCandidate(r){const text=(r.t+" "+(r.jd||"")).toLowerCase();
   return r.conv||/可转正|转正|留用|return offer|长期实习|暑期实习|日常实习|实习生|青云计划/.test(text);}
-function targetFit(r){return hasAnyTag(r,["产品","AI产品","策略产品","决策支持","算法/ML","数据科学","数据挖掘"])||/数据|产品|策略|商业分析|经营分析|战略|数字化|算法|机器学习|ai|大模型/i.test(r.t+" "+(r.jd||""));}
-function manufacturingFit(r){return targetFit(r)&&!/机械|电气|操作|技工|工艺|设备|维修|采购|生产|质检|质量|仓储|外贸|医药代表|销售/.test(r.t);}
-function isHunan(r){return /湖南|长沙|株洲|湘潭/.test((r.loc||"")+" "+(r.t||"")+" "+(r.jd||"")+" "+(r.src||""));}
+function targetFit(r){return hasAnyTag(r,["嵌入式软件","固件/MCU","BSP/Driver","Embedded Linux","医疗电子","硬件研发","FPGA/DSP","医学信号处理","其他生医工研发"]);}
+function manufacturingFit(r){return targetFit(r);}
+function isHunan(r){return /深圳|广州|东莞|珠海/.test(r.loc||"");}
 function isConsumerCommerce(r){return r.ind==="消费/零售/快消"||/快消|消费|零售|电商|品牌|市场|用户增长|商业分析|产品运营|供应链|欧莱雅|宝洁|联合利华|安踏|李宁|名创|泡泡玛特|得物/.test((r.c||"")+" "+(r.t||"")+" "+(r.jd||""));}
 function isInternet(r){return r.ind==="互联网/软件"||["腾讯","字节跳动","网易","京东","百度","快手","阿里","美团","拼多多"].includes(r.c);}
 function primaryRole(r){
-  if(hasAnyTag(r,["AI产品","策略产品","产品","决策支持"]))return "product";
-  if(hasAnyTag(r,["数据科学","数据挖掘"]))return "data";
-  if(hasTag(r,"算法/ML"))return "algo";
-  if(/商业分析|经营分析|数据分析|数据产品|产品运营|用户增长|策略|产品/i.test(r.t+" "+(r.jd||"")))return "product_data";
+  if(hasAnyTag(r,["嵌入式软件","固件/MCU","BSP/Driver","Embedded Linux"]))return "product";
+  if(targetFit(r))return "data";
   return "other";
 }
-function focusScore(r){
-  let v=r.s||0;
-  const role=primaryRole(r);
-  const text=(r.t+" "+(r.jd||"")).toLowerCase();
-  if(r.cyc==="2027")v+=60;
-  if(role==="product")v+=90;
-  if(role==="data")v+=70;
-  if(role==="product_data")v+=60;
-  if(role==="algo")v+=20;
-  if(isInternet(r)&&role==="algo"&&!hasAnyTag(r,["产品","数据科学","数据挖掘","决策支持"]))v-=70;
-  if(isInternet(r)&&role==="product")v+=10;
-  if(!isInternet(r)&&["product","data","product_data"].includes(role))v+=25;
-  if(convCandidate(r))v+=18;
-  if(r.stage==="提前批"||r.stage==="秋招")v+=12;
-  if(/机械|电气|材料|外贸|英语|市场营销|生产|设备|工艺|质检|质量|采购|销售|兼职|校园大使|大专|技术员/.test(text))v-=120;
-  if(r.lq||r.bc)v-=180;
-  if(!r.dl)v-=8;
-  return v;
-}
+function focusScore(r){return r.s||0;}
 function fitLevel(r){
-  if(r.lq||r.bc||/机械|电气|操作|技工|维修|质检|医药代表|电话销售|客户经理/.test(r.t))return "不适配";
+  if(r.lq||r.bc)return "不适配";
   if(!r.url||!r.dl)return "信息不足";
   if(r.s>=85&&targetFit(r))return "强适配";
   if(r.s>=60||targetFit(r)||r.gv)return "可尝试";
   return "信息不足";
 }
-const MAIN_TABS=[{k:"station",label:"信息台"},{k:"c27",label:"27届主线"},{k:"nonnet",label:"非互联网"},
-            {k:"convert",label:"转正候选"},{k:"hunan",label:"湖南/长沙"},
-            {k:"product",label:"产品/策略"},{k:"algo",label:"算法/数据"},
-            {k:"due",label:"即将截止"},{k:"board",label:"投递看板"},{k:"import",label:"📥导入"},{k:"health",label:"信源健康"}];
+const MAIN_TABS=[{k:"hi",label:"高匹配"},{k:"new",label:"今日新增"},{k:"all",label:"全部岗位"},
+            {k:"product",label:"嵌入式 / MCU"},{k:"algo",label:"医疗电子 / 硬件"},{k:"hunan",label:"深圳 / 大湾区"},
+            {k:"c27",label:"2027 / 2028届"},{k:"due",label:"即将截止"},{k:"station",label:"信息台"},
+            {k:"board",label:"投递看板"},{k:"import",label:"📥导入"},{k:"health",label:"信源健康"}];
 const MORE_TABS=[{k:"advance",label:"提前批/暑期(现在投)"},{k:"autumn",label:"秋招"},
             {k:"spring",label:"春招/补录"},{k:"summer",label:"暑期实习"},{k:"event",label:"宣讲/活动"},
-            {k:"c27gov",label:"27届央企"},{k:"aipm",label:"AI产品"},{k:"strategy_pm",label:"策略产品"},
-            {k:"decision",label:"决策支持"},{k:"datasci",label:"数据科学"},{k:"mining",label:"数据挖掘"},
+            {k:"c27gov",label:"27届央企"},{k:"aipm",label:"BSP/Driver"},{k:"strategy_pm",label:"Embedded Linux"},
+            {k:"decision",label:"医学信号处理"},{k:"datasci",label:"医疗电子"},{k:"mining",label:"FPGA/DSP"},
             {k:"all",label:"全部(应届)"},{k:"xz",label:"校招"},{k:"intern",label:"实习"},
             {k:"social",label:"社招"},{k:"new",label:"新增"},{k:"hi",label:"高匹配"},
             {k:"needddl",label:"待补截止"},{k:"nourl",label:"缺链接"},{k:"quality",label:"质量风险"},
@@ -504,32 +484,33 @@ function predTab(r,k){const st=stOf(r.id);
   if(k==="expired")return !r.gone&&st!=="ignored"&&expired(r);
   if(k==="quality")return !r.gone&&st!=="ignored"&&!expired(r)&&(r.lq||r.bc);
   const base=!r.gone&&st!=="ignored"&&!r.bc&&!r.lq&&!expired(r); // 通用可见（非下线/忽略/蓝领/低质/过期）
-  if(k==="c27")return base&&r.cyc==="2027";
-  if(k==="nonnet")return base&&r.ind!=="互联网/软件"&&(r.cyc==="2027"||r.gv||r.cat==="国家平台"||r.cat==="高校");
-  if(k==="advance")return base&&r.cyc==="2027"&&(r.stage==="提前批"||r.stage==="暑期实习");
-  if(k==="autumn")return base&&r.cyc==="2027"&&r.stage==="秋招";
-  if(k==="spring")return base&&r.cyc==="2027"&&r.stage==="春招/补录";
-  if(k==="summer")return base&&r.cyc==="2027"&&r.stage==="暑期实习";
-  if(k==="event")return base&&r.cyc==="2027"&&r.stage==="宣讲/活动";
-  if(k==="convert")return base&&r.cyc==="2027"&&convCandidate(r);
-  if(k==="c27gov")return base&&r.cyc==="2027"&&(r.gv||r.cat==="国家平台");
+  if(k==="c27")return base&&["2027","2028"].includes(r.cyc);
+  if(k==="nonnet")return base&&r.ind!=="互联网/软件"&&(["2027","2028"].includes(r.cyc)||r.gv||r.cat==="国家平台"||r.cat==="高校");
+  if(k==="advance")return base&&["2027","2028"].includes(r.cyc)&&(r.stage==="提前批"||r.stage==="暑期实习");
+  if(k==="autumn")return base&&["2027","2028"].includes(r.cyc)&&r.stage==="秋招";
+  if(k==="spring")return base&&["2027","2028"].includes(r.cyc)&&r.stage==="春招/补录";
+  if(k==="summer")return base&&["2027","2028"].includes(r.cyc)&&r.stage==="暑期实习";
+  if(k==="event")return base&&["2027","2028"].includes(r.cyc)&&r.stage==="宣讲/活动";
+  if(k==="convert")return base&&["2027","2028"].includes(r.cyc)&&convCandidate(r);
+  if(k==="c27gov")return base&&["2027","2028"].includes(r.cyc)&&(r.gv||r.cat==="国家平台");
   if(k==="hunan")return base&&isHunan(r);
-  if(k==="product")return base&&hasAnyTag(r,["产品","AI产品","策略产品","决策支持"]);
-  if(k==="aipm")return base&&hasTag(r,"AI产品");
-  if(k==="strategy_pm")return base&&hasTag(r,"策略产品");
-  if(k==="decision")return base&&hasTag(r,"决策支持");
-  if(k==="algo")return base&&(hasTag(r,"算法/ML")||hasAnyTag(r,["数据科学","数据挖掘"])||/数据分析|商业分析|数据产品|数据开发|数仓|数据仓库/i.test(r.t+" "+(r.jd||"")));
-  if(k==="datasci")return base&&hasTag(r,"数据科学");
-  if(k==="mining")return base&&hasTag(r,"数据挖掘");
+  if(k==="product")return base&&primaryRole(r)==="product";
+  if(k==="aipm")return base&&hasTag(r,"BSP/Driver");
+  if(k==="strategy_pm")return base&&hasTag(r,"Embedded Linux");
+  if(k==="decision")return base&&hasTag(r,"医学信号处理");
+  if(k==="algo")return base&&primaryRole(r)==="data";
+  if(k==="datasci")return base&&hasTag(r,"医疗电子");
+  if(k==="mining")return base&&hasTag(r,"FPGA/DSP");
   if(k==="social")return base&&r.kind==="社招";        // 社招单列
   const camp=base&&r.kind!=="社招";                    // 应届视图：剔除社招
   if(k==="xz")return camp&&r.kind==="校招";
   if(k==="intern")return camp&&r.kind==="实习";
   if(k==="due"){const d=daysLeft(r.dl);return camp&&d!=null&&d>=0&&d<=DUE_WINDOW;}
-  if(k==="needddl")return camp&&r.cyc==="2027"&&!r.dl;
+  if(k==="needddl")return camp&&["2027","2028"].includes(r.cyc)&&!r.dl;
   if(k==="nourl")return camp&&!r.url;
-  if(k==="new")return camp&&r.fs===MAXFS;
-  if(k==="hi")return camp&&r.s>=80;
+  if(k==="new")return base&&r.fs&&(new Date(r.fs)).toLocaleDateString("sv-SE")===today();
+  if(k==="hi")return base&&r.s>=80&&targetFit(r);
+  if(k==="all")return !r.gone&&st!=="ignored"&&!expired(r);
   if(k==="gov")return camp&&r.gv;
   if(k==="finance")return camp&&r.ind==="金融";
   if(k==="manufacturing")return camp&&(r.ind==="先进制造/工业"||r.ind==="半导体/电子"||r.ind==="新材料")&&manufacturingFit(r);
@@ -567,8 +548,8 @@ function esc(s){return (s||"").replace(/[&<>]/g,m=>({"&":"&amp;","<":"&lt;",">":
 // 把打分信号 tag 讲成人话（推荐理由）；技术标签单列
 const SIG={role_match:"岗位匹配",industry_match:"目标行业",city_match:"目标城市",
            "大厂":"大厂","硬科技":"硬科技","外企":"外企在华","央国企":"央国企",
-           "产品":"产品岗","AI产品":"AI产品","策略产品":"策略产品","决策支持":"决策支持",
-           "算法/ML":"算法/ML","数据科学":"数据科学","数据挖掘":"数据挖掘"};
+           "产品":"产品岗","BSP/Driver":"BSP/Driver","Embedded Linux":"Embedded Linux","医学信号处理":"医学信号处理",
+           "算法/ML":"算法/ML","医疗电子":"医疗电子","FPGA/DSP":"FPGA/DSP"};
 const QTAG=new Set(["代招/委托","猎头","劳务派遣","泛销售","低相关管培","地点风险","缺官网链接"]);
 function reason(r){return (r.tags||[]).filter(t=>SIG[t]).map(t=>SIG[t]);}
 function techTags(r){return (r.tags||[]).filter(t=>!t.startsWith("行业:")&&!SIG[t]&&t!=="offshore");}
@@ -577,9 +558,9 @@ function coach(r){
   if(q)return {cls:"warn",label:"暂跳过",text:"质量风险较高，除非公司/岗位特别确定，否则不进入主投递队列。"};
   if(expired(r))return {cls:"muted",label:"已过期",text:"截止已过，适合只做公司/岗位参考。"};
   if(!r.url)return {cls:"warn",label:"先补链接",text:"没有官网或投递链接，先核验来源再投入时间。"};
-  if(r.s>=90&&r.cyc==="2027"&&d!=null&&d<=7)return {cls:"hot",label:"今天优先投",text:"27届高匹配且截止很近，适合放进今日投递清单。"};
-  if(r.s>=80&&r.cyc==="2027")return {cls:"hot",label:"重点跟进",text:"27届主线高匹配，建议加入投递看板并补齐截止/网申状态。"};
-  if(r.s>=70&&(hasAnyTag(r,["产品","AI产品","策略产品","决策支持","算法/ML","数据科学","数据挖掘"])||r.gv))return {cls:"hot",label:"值得看",text:"方向或雇主层级贴近目标，可以快速判断 JD 后决定是否投递。"};
+  if(r.s>=90&&["2027","2028"].includes(r.cyc)&&d!=null&&d<=7)return {cls:"hot",label:"今天优先投",text:"27届高匹配且截止很近，适合放进今日投递清单。"};
+  if(r.s>=80&&["2027","2028"].includes(r.cyc))return {cls:"hot",label:"重点跟进",text:"2027/2028届高匹配，建议加入投递看板并补齐截止/网申状态。"};
+  if(r.s>=70&&(targetFit(r)))return {cls:"hot",label:"值得看",text:"方向或雇主层级贴近目标，可以快速判断 JD 后决定是否投递。"};
   if(missing)return {cls:"muted",label:"补信息",text:"信息不完整，先看原文或等后续更新。"};
   return {cls:"muted",label:"观察",text:"匹配度一般，适合放在备选池，不抢占高优先级投递时间。"};
 }
@@ -646,8 +627,8 @@ function render(){
   const expiredN=compact(DATA.filter(r=>predTab(r,"expired"))).length;
   const nodl=DATA.filter(r=>!r.gone&&!r.dl).length;
   const grouped=DATA.filter(r=>r.group).length-compact(DATA.filter(r=>r.group)).length;
-  const sortHint=sk==="focus"?" · 当前按主攻排序+温和去簇：产品/策略/数据优先，避免同公司刷屏":"";
-  document.getElementById("summary").textContent=`在架 ${DATA.length} 条，当前筛选 ${rows.length} 条 · 27届 ${c27N} 条（提前批 ${advN} / 秋招 ${autumnN} / 春招补录 ${springN}） · 产品岗 ${prodN} 条 · 算法/ML ${algoN} 条 · 决策支持 ${decN} 条 · 质量风险 ${qN} 条 · 待补截止 ${needDdl} 条 · 缺链接 ${noUrl} 条 · 已隐藏过期 ${expiredN} 条 · 多城市折叠 ${grouped} 条${sortHint}`;
+  const sortHint=sk==="focus"?" · 当前按主攻排序+温和去簇：嵌入式/MCU/医疗电子优先，避免同公司刷屏":"";
+  document.getElementById("summary").textContent=`在架 ${DATA.length} 条，当前筛选 ${rows.length} 条 · 2027/2028届 ${c27N} 条（提前批 ${advN} / 秋招 ${autumnN} / 春招补录 ${springN}） · 嵌入式/MCU ${prodN} 条 · 医疗电子/硬件 ${algoN} 条 · 医学信号处理 ${decN} 条 · 质量风险 ${qN} 条 · 待补截止 ${needDdl} 条 · 缺链接 ${noUrl} 条 · 已隐藏过期 ${expiredN} 条 · 多城市折叠 ${grouped} 条${sortHint}`;
   if(!rows.length){list.appendChild(el("div","empty","没有匹配的岗位，放宽筛选试试"));return;}
   rows.slice(0,RENDER_CAP).forEach(r=>{
     const tier=r.s>=80?"t3":r.s>=50?"t2":"t1";
@@ -658,11 +639,11 @@ function render(){
     const titleText=dt||r.c;
     let pre="";
     const KC={"实习":"k-i","校招":"k-c","社招":"k-s"};
-    if(r.cyc==="2027")pre+='<span class="b k-c">27届</span> ';
+    if(["2027","2028"].includes(r.cyc))pre+='<span class="b k-c">'+r.cyc+'届</span> ';
     if(r.stage&&r.stage!=="其他")pre+='<span class="b">'+esc(r.stage)+'</span> ';
     if(r.conv)pre+='<span class="b k-i">可转正</span> ';
     if(KC[r.kind])pre+='<span class="b '+KC[r.kind]+'">'+r.kind+'</span> ';
-    if(r.fs===MAXFS&&!r.gone)pre+='<span class="b new">新增</span> ';
+    if(r.fs&&(new Date(r.fs)).toLocaleDateString("sv-SE")===today()&&!r.gone)pre+='<span class="b new">新增</span> ';
     if(r.gone)pre+='<span class="b gone">已下线</span> ';
     const head=el("div","chead");
     head.appendChild(el("div","ctitle",pre+esc(titleText)));
@@ -742,9 +723,9 @@ function switchTab(k){tab=k;renderTabs();render();}
 function actionRank(r){
   const d=daysLeft(r.dl);
   const fs=focusScore(r);
-  if(r.s>=90&&r.cyc==="2027"&&d!=null&&d>=0&&d<=7)return 500-d;
-  if(r.cyc==="2027"&&fs>=190)return 400+fs;
-  if(r.s>=75&&(r.gv||hasAnyTag(r,["AI产品","策略产品","决策支持","数据科学","数据挖掘","产品"])))return 300+fs;
+  if(r.s>=90&&["2027","2028"].includes(r.cyc)&&d!=null&&d>=0&&d<=7)return 500-d;
+  if(["2027","2028"].includes(r.cyc)&&fs>=190)return 400+fs;
+  if(r.s>=75&&(targetFit(r)))return 300+fs;
   if(d!=null&&d>=0&&d<=3)return 260-d;
   return fs;
 }
@@ -861,7 +842,7 @@ function renderImport(){
 function renderStation(){
   const list=document.getElementById("list");list.innerHTML="";
   list.classList.remove("board");list.classList.remove("health");list.classList.add("station");
-  const all=compact(DATA.filter(r=>predTab(r,"all")));
+  const all=compact(DATA.filter(r=>predTab(r,"all")&&!r.lq&&!r.bc));
   const c27=compact(DATA.filter(r=>predTab(r,"c27")));
   const nonnet=compact(DATA.filter(r=>predTab(r,"nonnet")));
   const internet=all.filter(r=>r.ind==="互联网/软件");
@@ -872,10 +853,10 @@ function renderStation(){
   const tasks=taskList(all,c27,due,needddl,quality,sourceBad);
   const fitCounts=topRows(all,r=>fitLevel(r),4);
   const unchecked=INBOX.nowcoder_blocks||0;
-  document.getElementById("summary").textContent=`信息台：已确认 ${all.length} · 27届 ${c27.length} · 待审核线索 ${unchecked} · 非互联网 ${nonnet.length} · 今日动作 ${tasks.length}`;
+  document.getElementById("summary").textContent=`信息台：已确认 ${all.length} · 2027/2028届 ${c27.length} · 待审核线索 ${unchecked} · 非互联网 ${nonnet.length} · 今日动作 ${tasks.length}`;
   const wrap=el("div","dash");
   const metrics=el("section","dashrow");
-  [["已确认岗位",all.length,"来自正式库，可投递跟进"],["待审核线索",unchecked,"牛客/群/公众号先核验"],["27届主线",c27.length,"提前批/秋招/春招/实习"],["今日动作",tasks.length,"投递、补信息、问人、导入"]].forEach(x=>{
+  [["已确认岗位",all.length,"来自正式库，可投递跟进"],["待审核线索",unchecked,"牛客/群/公众号先核验"],["2027/2028届",c27.length,"提前批/秋招/春招/实习"],["今日动作",tasks.length,"投递、补信息、问人、导入"]].forEach(x=>{
     const m=el("div","metric",`<b>${x[1]}</b><span>${x[0]} · ${x[2]}</span>`);metrics.appendChild(m);
   });
   wrap.appendChild(metrics);
@@ -894,7 +875,7 @@ function renderStation(){
   right.appendChild(el("div","mutedline","信息台口径：待审核线索不等于岗位。先核公司、岗位、截止、官网链接，再进入主库。"));
   right.appendChild(el("h2",null,"快捷入口"));
   const quick=el("div","mini");
-  [["转正候选","convert"],["湖南/长沙","hunan"],["非互联网","nonnet"],["央企招聘","gov"],["金融","finance"],["制造硬件(谨慎)","manufacturing"],["能源电力","energy"],["汽车新能源","auto"],["医药医疗","medical"],["快消电商","consumer"],["咨询专业","consulting"],["待补截止","needddl"],["信源健康","health"]].forEach(([label,k])=>{
+  [["转正候选","convert"],["深圳/大湾区","hunan"],["非互联网","nonnet"],["央企招聘","gov"],["金融","finance"],["硬件研发","manufacturing"],["能源电力","energy"],["汽车新能源","auto"],["医药医疗","medical"],["快消电商","consumer"],["咨询专业","consulting"],["待补截止","needddl"],["信源健康","health"]].forEach(([label,k])=>{
     const b=el("button","slink",label);b.onclick=()=>switchTab(k);quick.appendChild(b);
   });
   right.appendChild(quick);
@@ -909,24 +890,24 @@ function renderStation(){
   fitCounts.forEach(([k,n])=>fit.appendChild(el("div","barline",`<span>${esc(k)}</span><div class="bartrack"><div class="barfill" style="width:${pct(n,all.length)}%"></div></div><span>${n}</span>`)));
   fit.appendChild(el("div","mutedline","参考 Huntr/个人求职 tracker 的做法：先分清强适配、可尝试、信息不足、不适配，再决定投递动作。"));
   grid2.appendChild(fit);
-  const stage=el("section","panel");stage.innerHTML="<h2>27届节点</h2>";
+  const stage=el("section","panel");stage.innerHTML="<h2>2027/2028届节点</h2>";
   const stages=[["提前批","advance"],["秋招","autumn"],["春招/补录","spring"],["暑期实习","summer"],["宣讲/活动","event"],["可转正","convert"]];
   stages.forEach(([label,k])=>{const n=compact(DATA.filter(r=>predTab(r,k))).length;
     stage.appendChild(el("div","barline",`<span>${label}</span><div class="bartrack"><div class="barfill" style="width:${pct(n,c27.length)}%"></div></div><span>${n}</span>`));});
   grid2.appendChild(stage);wrap.appendChild(grid2);
   const gridRole=el("div","dashgrid");
   const roles=el("section","panel");roles.innerHTML="<h2>方向热度</h2>";
-  [["产品岗","product"],["AI产品","aipm"],["策略产品","strategy_pm"],["决策支持","decision"],["算法/ML","algo"],["数据科学","datasci"],["数据挖掘","mining"]].forEach(([label,k])=>{
+  [["嵌入式/MCU","product"],["BSP/Driver","aipm"],["Embedded Linux","strategy_pm"],["医学信号处理","decision"],["医疗电子/硬件","algo"],["医疗电子","datasci"],["FPGA/DSP","mining"]].forEach(([label,k])=>{
     const n=compact(DATA.filter(r=>predTab(r,k))).length;
     roles.appendChild(el("div","barline",`<span>${label}</span><div class="bartrack"><div class="barfill" style="width:${pct(n,Math.max(1,c27.length))}%"></div></div><span>${n}</span>`));});
   gridRole.appendChild(roles);
   const miss=el("section","panel");miss.innerHTML="<h2>缺口雷达</h2>";
   const gaps2=[
-    ["湖南转正候选", compact(DATA.filter(r=>predTab(r,"hunan")&&predTab(r,"convert"))).length],
+    ["大湾区转正候选", compact(DATA.filter(r=>predTab(r,"hunan")&&predTab(r,"convert"))).length],
     ["非互联网转正", compact(DATA.filter(r=>predTab(r,"nonnet")&&predTab(r,"convert"))).length],
-    ["快消电商 27届", compact(DATA.filter(r=>predTab(r,"consumer")&&r.cyc==="2027")).length],
-    ["金融 27届", compact(DATA.filter(r=>predTab(r,"finance")&&r.cyc==="2027")).length],
-    ["咨询专业 27届", compact(DATA.filter(r=>predTab(r,"consulting")&&r.cyc==="2027")).length],
+    ["快消电商 27届", compact(DATA.filter(r=>predTab(r,"consumer")&&["2027","2028"].includes(r.cyc))).length],
+    ["金融 27届", compact(DATA.filter(r=>predTab(r,"finance")&&["2027","2028"].includes(r.cyc))).length],
+    ["咨询专业 27届", compact(DATA.filter(r=>predTab(r,"consulting")&&["2027","2028"].includes(r.cyc))).length],
     ["制造硬件强适配", compact(DATA.filter(r=>predTab(r,"manufacturing")&&fitLevel(r)==="强适配")).length],
   ];
   gaps2.forEach(([label,n])=>miss.appendChild(el("div","alertline",`<b>${esc(label)}</b><span>${n}</span>`)));
@@ -934,7 +915,7 @@ function renderStation(){
   gridRole.appendChild(miss);wrap.appendChild(gridRole);
   const grid3=el("div","dashgrid");
   const non=el("section","panel");non.innerHTML="<h2>非互联网行业雷达</h2>";
-  [["央企招聘","gov"],["金融","finance"],["制造硬件(适配后)","manufacturing"],["能源电力","energy"],["汽车新能源","auto"],["医药医疗","medical"],["快消电商","consumer"],["咨询专业","consulting"],["湖南/长沙","hunan"]].forEach(([label,k])=>{
+  [["央企招聘","gov"],["金融","finance"],["硬件研发","manufacturing"],["能源电力","energy"],["汽车新能源","auto"],["医药医疗","medical"],["快消电商","consumer"],["咨询专业","consulting"],["深圳/大湾区","hunan"]].forEach(([label,k])=>{
     const n=compact(DATA.filter(r=>predTab(r,k))).length;
     non.appendChild(el("div","barline",`<span>${label}</span><div class="bartrack"><div class="barfill" style="width:${pct(n,Math.max(1,nonnet.length))}%"></div></div><span>${n}</span>`));});
   non.appendChild(el("div","mutedline","这里故意把互联网拆出去看：如果非互联网数量太低，优先补官网/就业办/线下宣讲/内推表格。"));
@@ -961,7 +942,7 @@ function renderStation(){
   const backlog=el("section","panel");backlog.innerHTML="<h2>待攻信源</h2>";
   const bl=(BACKLOG||[]).filter(x=>["1","2"].includes(String(x.priority))).slice(0,10);
   bl.forEach(x=>backlog.appendChild(el("div","alertline",`<b>${esc(x.name||x.source_id)}</b><span>${esc(x.status||"")}</span>`)));
-  backlog.appendChild(el("div","mutedline","这里对应 source_backlog.csv：不是没有机会，而是哪些金融/快消/咨询/制造源还没接入或需要人工导入。"));
+  backlog.appendChild(el("div","mutedline","这里对应 source_backlog.csv：不是没有机会，而是哪些医疗器械/嵌入式/硬件源还没接入或需要人工导入。"));
   grid5.appendChild(backlog);
   const methods=el("section","panel");methods.innerHTML="<h2>信息台结构</h2>";
   methods.appendChild(el("div","alertline","<b>信源层</b><span>官网 / 高校 / 国聘 / 群 / 牛客</span>"));

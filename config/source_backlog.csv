@@ -35,3 +35,24 @@ priority,source_id,name,type,url,status,next_action,notes
 1,cn-inovance-campus,汇川技术,official,https://inovance.zhiye.com/Campus,research,extract beisen SU,北森新版·工业自动化·SU待提取
 1,cn-gigadevice-campus,兆易创新,official,https://gigadevice.hotjob.cn/,research,extract beisen SU,北森·半导体存储/MCU·SU待提取
 2,cn-eve-campus,亿纬锂能,official,https://www.evebattery.com/campus-recruitment-process,blocked,51job adapter,新能源电池·走51job网申
+1,,迈瑞医疗,official,https://www.mindray.com/cn/career/career-search,research,核实官方公开招聘接口后接入；当前通过聚合源发现,医疗器械/硬件研发监控需求；非已接通官网源
+1,,开立医疗,official,,research,核实官方公开招聘接口后接入；当前通过聚合源发现,医疗器械/硬件研发监控需求；非已接通官网源
+1,,理邦仪器,official,,research,核实官方公开招聘接口后接入；当前通过聚合源发现,医疗器械/硬件研发监控需求；非已接通官网源
+1,,科曼医疗,official,,research,核实官方公开招聘接口后接入；当前通过聚合源发现,医疗器械/硬件研发监控需求；非已接通官网源
+1,,麦科田医疗,official,,research,核实官方公开招聘接口后接入；当前通过聚合源发现,医疗器械/硬件研发监控需求；非已接通官网源
+1,,新产业生物,official,,research,核实官方公开招聘接口后接入；当前通过聚合源发现,医疗器械/硬件研发监控需求；非已接通官网源
+1,,帝迈生物,official,,research,核实官方公开招聘接口后接入；当前通过聚合源发现,医疗器械/硬件研发监控需求；非已接通官网源
+1,,华大智造,official,,research,核实官方公开招聘接口后接入；当前通过聚合源发现,医疗器械/硬件研发监控需求；非已接通官网源
+1,,华大基因,official,,research,核实官方公开招聘接口后接入；当前通过聚合源发现,医疗器械/硬件研发监控需求；非已接通官网源
+1,,联影医疗,official,,research,核实官方公开招聘接口后接入；当前通过聚合源发现,医疗器械/硬件研发监控需求；非已接通官网源
+1,,微创医疗,official,,research,核实官方公开招聘接口后接入；当前通过聚合源发现,医疗器械/硬件研发监控需求；非已接通官网源
+1,,鱼跃医疗,official,,research,核实官方公开招聘接口后接入；当前通过聚合源发现,医疗器械/硬件研发监控需求；非已接通官网源
+1,,乐普医疗,official,,research,核实官方公开招聘接口后接入；当前通过聚合源发现,医疗器械/硬件研发监控需求；非已接通官网源
+1,,东软医疗,official,,research,核实官方公开招聘接口后接入；当前通过聚合源发现,医疗器械/硬件研发监控需求；非已接通官网源
+1,,威高,official,,research,核实官方公开招聘接口后接入；当前通过聚合源发现,医疗器械/硬件研发监控需求；非已接通官网源
+1,,万东医疗,official,,research,核实官方公开招聘接口后接入；当前通过聚合源发现,医疗器械/硬件研发监控需求；非已接通官网源
+1,,GE HealthCare,official,,research,核实官方公开招聘接口后接入；当前通过聚合源发现,医疗器械/硬件研发监控需求；非已接通官网源
+1,,Siemens Healthineers,official,,research,核实官方公开招聘接口后接入；当前通过聚合源发现,医疗器械/硬件研发监控需求；非已接通官网源
+1,,Roche Diagnostics,official,,research,核实官方公开招聘接口后接入；当前通过聚合源发现,医疗器械/硬件研发监控需求；非已接通官网源
+1,,Abbott,official,,research,核实官方公开招聘接口后接入；当前通过聚合源发现,医疗器械/硬件研发监控需求；非已接通官网源
+1,,Medtronic,official,,research,核实官方公开招聘接口后接入；当前通过聚合源发现,医疗器械/硬件研发监控需求；非已接通官网源

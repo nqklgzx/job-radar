@@ -11,6 +11,7 @@ score.py 只负责把这些规则组装成最终分数，避免评分主流程�
 from __future__ import annotations
 
 from typing import List, Tuple
+import re
 
 
 TARGET_ROLE_SIGNAL = (
@@ -74,7 +75,7 @@ HARD_IND = ("半导体/电子", "航空航天/军工", "新材料", "汽车/新�
 
 def has_target_role_signal(title: str) -> bool:
     low = (title or "").lower()
-    return any(k in low for k in TARGET_ROLE_SIGNAL)
+    return any(keyword_match(k, low) for k in TARGET_ROLE_SIGNAL)
 
 
 def role_signal_score(title: str, jd_text: str) -> Tuple[int, List[str]]:
@@ -83,6 +84,43 @@ def role_signal_score(title: str, jd_text: str) -> Tuple[int, List[str]]:
     score = 0
     tags: List[str] = []
 
+    for label, words in EMBEDDED_ROLES:
+        if any(keyword_match(k, title_low) for k in words):
+            tags.append(label)
+    if tags:
+        score += 55 if any(t in tags for t in ("嵌入式软件", "固件/MCU", "BSP/Driver", "Embedded Linux")) else 45
+    return score, tags
+
+
+def keyword_match(keyword: str, text: str) -> bool:
+    """技能词边界；单独字母 C 只在明确编程语境中计分。"""
+    k = keyword.lower()
+    low = (text or "").lower()
+    if k == "c":
+        return bool(re.search(r"(?<![a-z0-9])c\s*(?:语言|编程|开发|language|programming|/\s*c\+\+)", low))
+    if re.fullmatch(r"[a-z0-9 +/#.\-]+", k):
+        return bool(re.search(r"(?<![a-z0-9])" + re.escape(k) + r"(?![a-z0-9])", low))
+    return k in low
+
+
+EMBEDDED_ROLES = (
+    ("嵌入式软件", ("嵌入式", "embedded software", "embedded engineer", "底层软件")),
+    ("固件/MCU", ("固件", "firmware", "mcu", "单片机", "stm32", "gd32")),
+    ("BSP/Driver", ("bsp", "驱动开发", "驱动工程", "device driver", "linux driver", "bootloader")),
+    ("Embedded Linux", ("嵌入式linux", "嵌入式 linux", "embedded linux", "linux驱动", "linux 驱动")),
+    ("医疗电子", ("医疗电子", "medical electronics")),
+    ("硬件研发", ("硬件", "电子研发", "电子工程", "电路", "hardware", "控制工程", "电源工程")),
+    ("FPGA/DSP", ("fpga", "dsp")),
+    ("医学信号处理", ("医学信号", "生理信号", "biomedical signal")),
+    ("其他生医工研发", ("医疗设备研发", "医疗器械研发", "医用传感器", "生物医学工程师", "biomedical engineer")),
+)
+TARGET_ROLE_SIGNAL = tuple(dict.fromkeys(k for _, words in EMBEDDED_ROLES for k in words))
+
+
+def _legacy_role_signal_score(title_low: str, text_low: str) -> Tuple[int, List[str]]:
+    """保留上游角色口径供历史规则参考，不参与本画像评分。"""
+    score = 0
+    tags: List[str] = []
     if any(k in title_low for k in PRODUCT_ROLE_SIGNAL):
         score += 22
         tags.append("产品")
@@ -110,6 +148,8 @@ def role_signal_score(title: str, jd_text: str) -> Tuple[int, List[str]]:
 def employer_tier(company: str, industry: str, sid: str) -> Tuple[str, int]:
     """据公司名(+行业/信源)判雇主层级 → (标签, 加分)。"""
     c = company or ""
+    if any(k.lower() in c.lower() for k in ("迈瑞", "开立", "理邦", "科曼", "麦科田", "新产业生物", "帝迈", "华大智造", "联影", "微创", "鱼跃", "乐普", "东软医疗", "威高", "万东", "GE HealthCare", "Siemens Healthineers", "Philips", "Roche", "Abbott", "Medtronic")):
+        return "医疗器械", 15
     if any(b in c for b in BIGTECH):
         return "大厂", 28
     if any(b in c for b in HARDTECH_CO):

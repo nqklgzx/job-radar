@@ -23,7 +23,11 @@ def _ensure():
                 "`pip install playwright && python -m playwright install chromium`"
             ) from e
         _pw = sync_playwright().start()
-        _browser = _pw.chromium.launch(headless=True)
+        try:
+            _browser = _pw.chromium.launch(headless=True)
+        except Exception:
+            shutdown()  # 启动失败也释放同步事件循环，避免影响后续抓取器。
+            raise
     return _browser
 
 

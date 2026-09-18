@@ -20,3 +20,5 @@ scratch/
 # data/ 由 GitHub Actions 生成并 commit；source_state/notify_state 属于运行状态，可保留。
 
 .ssh/
+.env
+.env.*

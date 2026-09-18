@@ -11,9 +11,14 @@ import datetime as dt
 import json
 import os
 import re
+import sys
 from collections import Counter
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, ROOT)
+from job_radar.role_rules import EMBEDDED_ROLES
+from job_radar.workbench_rules import is_2027_cycle
+
 DATA_DIR = os.path.join(ROOT, "data")
 JOBS = os.path.join(DATA_DIR, "jobs.json")
 HEALTH = os.path.join(DATA_DIR, "health_report.json")
@@ -33,7 +38,7 @@ def text(job: dict) -> str:
 
 def is_2027(job: dict) -> bool:
     hay = text(job)
-    return any(k in hay for k in ("2027", "2027届", "27届", "27 届")) or "27届" in (job.get("tags") or [])
+    return bool({"27届", "28届"} & tags(job)) or bool(re.search(r"(?:202[78]\s*届|(?<!\d)2[78]\s*届|202[78](?:校园|校招))", hay))
 
 
 def tags(job: dict) -> set:
@@ -41,19 +46,7 @@ def tags(job: dict) -> set:
 
 
 def primary_role(job: dict) -> str:
-    ts = tags(job)
-    hay = text(job)
-    if ts & {"AI产品", "策略产品", "产品", "决策支持"}:
-        return "产品/策略"
-    if ts & {"数据科学", "数据挖掘"} or re.search(r"数据分析|商业分析|数据产品|数据科学|数据挖掘", hay):
-        return "数据"
-    if "算法/ML" in ts:
-        return "算法"
-    if re.search(r"算法|机器学习|深度学习|数据挖掘|人工智能|大模型|llm|nlp|多模态", hay):
-        return "算法"
-    if re.search(r"经营分析|用户增长|产品运营|策略", hay):
-        return "产品/策略"
-    return "其他"
+    return next((label for label, _ in EMBEDDED_ROLES if label in tags(job)), "其他")
 
 
 def is_internet(job: dict) -> bool:
@@ -71,32 +64,7 @@ def days_left(deadline: str) -> int | None:
 
 
 def focus_score(job: dict) -> int:
-    score = int(job.get("match_score") or 0)
-    role = primary_role(job)
-    hay = text(job)
-    if is_2027(job):
-        score += 60
-    if role == "产品/策略":
-        score += 90
-    elif role == "数据":
-        score += 70
-    elif role == "算法":
-        score += 20
-    if is_internet(job) and role == "算法":
-        score -= 70
-    if not is_internet(job) and role in {"产品/策略", "数据"}:
-        score += 25
-    if any(k in hay for k in ("可转正", "转正", "留用", "return offer")):
-        score += 18
-    if any(k in hay for k in ("提前批", "秋招")):
-        score += 12
-    if WEAK.search(hay):
-        score -= 120
-    if LOW & tags(job):
-        score -= 180
-    if not job.get("deadline"):
-        score -= 8
-    return score
+    return int(job.get("match_score") or 0)
 
 
 def base_score(job: dict) -> int:
@@ -104,14 +72,7 @@ def base_score(job: dict) -> int:
 
 
 def is_focus_job(job: dict, min_focus: int, min_match: int) -> bool:
-    if base_score(job) < min_match:
-        return False
-    role = primary_role(job)
-    if role in {"产品/策略", "数据"}:
-        return focus_score(job) >= min_focus
-    if role == "算法":
-        return focus_score(job) >= max(100, min_focus - 20)
-    return focus_score(job) >= min_focus + 40
+    return primary_role(job) != "其他" and base_score(job) >= max(min_match, min_focus)
 
 
 def clean_title(job: dict) -> str:
@@ -187,7 +148,11 @@ def latest_first_seen(jobs: list[dict]) -> str:
 
 
 def first_seen_day(job: dict) -> str:
-    return str(job.get("first_seen") or "")[:10]
+    value = str(job.get("first_seen") or "")
+    try:
+        return dt.datetime.fromisoformat(value.replace("Z", "+00:00")).astimezone(dt.timezone(dt.timedelta(hours=8))).date().isoformat()
+    except ValueError:
+        return value[:10]
 
 
 def job_key(job: dict) -> str:
@@ -238,13 +203,15 @@ def mark_pushed(path: str, jobs: list[dict]) -> int:
     return added
 
 
-def build(limit: int = 8, min_focus: int = 120, min_match: int = 50, mode: str = "new", since: str = "",
+def build(limit: int = 8, min_focus: int = 80, min_match: int = 80, mode: str = "new", since: str = "",
           include_existing_due: bool = False, state_path: str = STATE,
           ignore_state: bool = False, workbench_url: str = DEFAULT_WORKBENCH_URL) -> tuple[str, list[dict]]:
+    profiles = json.load(open(os.path.join(ROOT, "config", "profiles.json"), encoding="utf-8"))
+    min_match = max(min_match, min(int(p["min_score_to_push"]) for p in profiles.values()))
     jobs = json.load(open(JOBS, encoding="utf-8"))
-    active = [j for j in jobs if not j.get("gone") and not (LOW & tags(j)) and not WEAK.search(text(j))]
+    active = [j for j in jobs if not j.get("gone") and not (LOW & tags(j)) and (days_left(j.get("deadline", "")) is None or days_left(j.get("deadline", "")) >= 0)]
     latest = latest_first_seen(active)
-    since_day = since or (latest[:10] if latest else dt.date.today().isoformat())
+    since_day = since or dt.datetime.now(dt.timezone(dt.timedelta(hours=8))).date().isoformat()
     state = load_state(state_path) if state_path and not ignore_state else {"pushed_keys": {}}
     if mode == "all":
         pushed_pool = active
@@ -260,8 +227,8 @@ def build(limit: int = 8, min_focus: int = 120, min_match: int = 50, mode: str =
 
     c27_all = [j for j in active if is_2027(j)]
     c27_new = [j for j in pushed_pool if is_2027(j)]
-    product_data = [j for j in c27_new if primary_role(j) in {"产品/策略", "数据"} and is_focus_job(j, min_focus, min_match)]
-    non_internet = [j for j in c27_new if not is_internet(j) and primary_role(j) in {"产品/策略", "数据"} and is_focus_job(j, min_focus, min_match)]
+    product_data = [j for j in pushed_pool if primary_role(j) != "其他" and is_focus_job(j, min_focus, min_match)]
+    non_internet = [j for j in pushed_pool if j.get("industry") == "医疗/医药" and primary_role(j) != "其他" and is_focus_job(j, min_focus, min_match)]
     due_pool = active if (mode == "all" or include_existing_due) else pushed_pool
     due = [
         j for j in due_pool
@@ -269,18 +236,18 @@ def build(limit: int = 8, min_focus: int = 120, min_match: int = 50, mode: str =
         and 0 <= d <= 7
         and is_focus_job(j, min_focus, min_match)
     ]
-    missing = [j for j in c27_new if primary_role(j) in {"产品/策略", "数据"} and is_focus_job(j, min_focus, min_match) and not j.get("deadline")]
+    missing = [j for j in pushed_pool if primary_role(j) != "其他" and is_focus_job(j, min_focus, min_match) and not j.get("deadline")]
 
     product_data.sort(key=focus_score, reverse=True)
     non_internet.sort(key=focus_score, reverse=True)
-    due.sort(key=lambda j: (days_left(j.get("deadline", "")) or 999, -focus_score(j)))
+    due.sort(key=lambda j: (days_left(j.get("deadline", "")), -focus_score(j)))
     missing.sort(key=focus_score, reverse=True)
 
     lines = [
-        f"# Job Radar｜{dt.date.today().isoformat()} 新增机会",
+        f"# Job Radar｜{dt.datetime.now(dt.timezone(dt.timedelta(hours=8))).date().isoformat()} 新增机会",
         "",
-        f"未推新增 {len(pushed_pool)} 条，其中 27届 {len(c27_new)} 条。",
-        f"重点候选 {len(product_data)} 条；非互联网产品/数据 {len(non_internet)} 条；7天内截止 {len(due)} 条。",
+        f"未推新增 {len(pushed_pool)} 条，其中 2027/2028届 {len(c27_new)} 条。",
+        f"高匹配岗位 {len(product_data)} 条；医疗器械研发 {len(non_internet)} 条；7天内截止 {len(due)} 条。",
     ]
     if skipped_pushed:
         lines.append(f"已自动过滤历史推送 {skipped_pushed} 条。")
@@ -294,7 +261,7 @@ def build(limit: int = 8, min_focus: int = 120, min_match: int = 50, mode: str =
     selected: list[dict] = []
     sections = [
         ("新增优先看", product_data, limit),
-        ("新增非互联网产品/数据", non_internet, limit),
+        ("新增医疗器械研发", non_internet, limit),
         ("新增7天内截止" if mode != "all" and not include_existing_due else "7天内截止", due, limit),
         ("新增待补截止", missing, min(6, limit)),
     ]
@@ -314,8 +281,8 @@ def main() -> None:
     p = argparse.ArgumentParser(description="生成 Job Radar 自动化推送预览 Markdown。")
     p.add_argument("--out", default=OUT)
     p.add_argument("--limit", type=int, default=8)
-    p.add_argument("--min-focus", type=int, default=120)
-    p.add_argument("--min-match", type=int, default=50,
+    p.add_argument("--min-focus", type=int, default=80)
+    p.add_argument("--min-match", type=int, default=80,
                    help="进入推送的最低原始匹配分，避免弱相关岗位靠规则加分混入")
     p.add_argument("--mode", choices=("new", "all"), default="new",
                    help="new=只推最近一次同步新增；all=全量预览")

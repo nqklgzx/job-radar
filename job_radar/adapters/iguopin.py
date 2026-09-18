@@ -20,7 +20,7 @@ _API = "https://gp-api.iguopin.com/api/jobs/v1/list"
 _HEADERS = {"Referer": "https://www.iguopin.com/", "Origin": "https://www.iguopin.com"}
 MAX_RESULTS = 240
 _KEEP = re.compile(
-    r"(2027|27届|提前批|校招|校园招聘|实习|数据|算法|AI|人工智能|大模型|机器学习|统计|量化|风控|"
+    r"(嵌入式|固件|MCU|STM32|BSP|驱动|硬件|电子研发|医疗电子|FPGA|DSP|医学信号|2028|28届|2027|27届|提前批|校招|校园招聘|实习|数据|算法|AI|人工智能|大模型|机器学习|统计|量化|风控|"
     r"数据科学|数据挖掘|深度学习|推荐算法|搜索算法|NLP|CV|LLM|多模态|"
     r"产品|策略|需求|增长|用户|商业化|平台|AIGC|智能体|"
     r"战略|经营|商业分析|行业研究|产业研究|投研|投资分析|总裁办|管培|项目管理|数字化转型|决策|"
@@ -62,8 +62,8 @@ def _iter_jobs(keyword: str) -> Iterable[Dict]:
         body = {"page": page, "page_size": 50, "keyword": keyword}
         try:
             data = post_json(_API, body, headers=_HEADERS, timeout=5)
-        except Exception:  # noqa: BLE001 — 单关键词/单页失败不拖垮整源
-            break
+        except Exception:  # 整源失败交由健康报告记录，避免把请求失败当成零岗位
+            raise
         payload = data.get("data") or {}
         rows = payload.get("list") or []
         if not rows:

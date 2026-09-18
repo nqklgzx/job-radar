@@ -3,12 +3,13 @@
 这些规则只影响 data/jobs.html 的视图、Tab 和筛选，不影响抓取与入库。
 """
 from __future__ import annotations
+import re
 
 HIDDEN_INDUSTRIES = {"房地产/建筑/工程", "化工"}
 
 INTERN_KW = ("实习", "intern", "見習", "见习")
 CAMPUS_KW = ("校招", "校园招聘", "应届", "管培", "培训生", "储备干部", "储备生",
-             "届毕业", "届校", "2025届", "2026届", "2027届", "校招生", "campus",
+             "届毕业", "届校", "2025届", "2026届", "2027届", "2028届", "校招生", "campus",
              "graduate", "新锐", "潜力生", "毕业生")
 SOCIAL_KW = ("社招", "社会招聘", "资深", "高级专家", "首席", "总监", "年经验",
              "年以上", "年工作经验", "experienced", "senior", "principal", "staff ")
@@ -72,8 +73,10 @@ def stage(title: str, jd: str) -> str:
         return "提前批"
     if any(k in text or k in low for k in AUTUMN_KW):
         return "秋招"
-    if any(k in text or k in low for k in SUMMER_KW):
+    if "暑期" in text or "summer intern" in low:
         return "暑期实习"
+    if any(k in text or k in low for k in INTERN_KW):
+        return "日常实习"
     if any(k in text or k in low for k in EVENT_KW):
         return "宣讲/活动"
     if any(k in text or k in low for k in CAMPUS_KW):
@@ -85,17 +88,6 @@ def is_2027_cycle(sid: str, job_kind: str, title: str, jd: str, publish: str, jo
     text = text_blob(title, jd)
     low = text.lower()
     if any(k in text or k in low for k in C27_KW):
-        return True
-    recent_2026 = publish >= "2026-05-01"
-    campus_source = sid == "cn-tencent-campus" or sid == "nk-campus" or sid.startswith("edu-") or sid in ("gov-ncss", "gov-qyzp")
-    student_source = sid in ("nk-intern", "sxs-intern")
-    if sid == "cn-tencent-campus":
-        return True
-    if recent_2026 and campus_source and job_kind == "校招":
-        return True
-    if recent_2026 and student_source and job_stage == "暑期实习":
-        return True
-    if recent_2026 and job_stage in ("提前批", "秋招", "春招/补录"):
         return True
     return False
 

@@ -313,7 +313,7 @@ def run(only_adapters: Optional[set] = None, only_source_ids: Optional[set] = No
             job.risk_flags = list(dict.fromkeys(job.risk_flags + best.risk_flags + qrisks))
 
     # 增量合并入库（新增追加、下线移除、保留用户状态）
-    scoped_ids = success_source_ids if preserve_unselected else None
+    scoped_ids = success_source_ids  # 失败或未运行的来源保留旧数据，防止误报下线
 
     if not jobs and scoped_ids is None and os.path.exists(jobs_path):
         try:

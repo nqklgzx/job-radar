@@ -13,14 +13,7 @@ from typing import Iterable, List
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONFIG_PATH = os.path.join(ROOT, "config", "role_keywords.json")
 
-_DEFAULTS = {
-    "intern": ["实习"],
-    "data_algo": ["算法", "机器学习", "数据科学", "数据挖掘", "推荐算法", "大模型"],
-    "product": ["AI产品", "策略产品", "数据产品"],
-    "decision": ["战略分析", "经营分析", "商业分析", "行业研究", "管培生", "数字化转型"],
-    "campus_cycle": ["2027", "27届", "提前批", "央企校招", "国企校招", "秋招", "春招"],
-    "iguopin_extra": ["大模型算法"],
-}
+_DEFAULTS = {'intern': ['嵌入式实习', '硬件实习'], 'data_algo': ['嵌入式', '固件', 'MCU', 'STM32', 'BSP', '驱动开发'], 'product': ['医疗电子', '硬件研发', '电子研发'], 'decision': ['FPGA', 'DSP', '医学信号处理'], 'campus_cycle': ['2027届 嵌入式', '2028届 嵌入式', '校招 硬件', '实习 固件'], 'iguopin_extra': ['医疗器械研发']}
 
 
 @lru_cache(maxsize=1)
@@ -49,8 +42,8 @@ def keywords(*groups: str) -> List[str]:
 
 
 def role_focus_keywords() -> List[str]:
-    return keywords("intern", "data_algo")
+    return keywords("data_algo", "product", "decision", "intern")
 
 
 def iguopin_keywords() -> List[str]:
-    return keywords("campus_cycle", "product", "decision", "data_algo", "iguopin_extra")
+    return keywords("data_algo", "product", "decision", "intern", "campus_cycle", "iguopin_extra")

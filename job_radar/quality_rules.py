@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 from typing import List, Tuple
+from .role_rules import has_target_role_signal
 
 LOW_QUALITY_TAGS = {
     "代招/委托",
@@ -51,7 +52,7 @@ def quality_tags(job) -> Tuple[List[str], List[str]]:
     if any(k in text for k in _DISPATCH_KW):
         tags.append("劳务派遣")
         risks.append("劳务派遣")
-    if any(k in title for k in _SALES_KW):
+    if any(k in title for k in _SALES_KW) and not has_target_role_signal(title):
         tags.append("泛销售")
     if any(k in title for k in _MANAGEMENT_TRAINEE_KW) and not any(k.lower() in text for k in _TARGET_KW):
         tags.append("低相关管培")

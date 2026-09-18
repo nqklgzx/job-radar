@@ -10,7 +10,7 @@ from typing import Dict, List
 
 from .models import Job
 from .normalize import normalize_city
-from .role_rules import employer_tier, has_target_role_signal, role_signal_score
+from .role_rules import employer_tier, has_target_role_signal, role_signal_score, keyword_match
 _C27_KW = ("2027届", "2027 届", "27届", "27 届", "2027校园", "2027校招", "二零二七")
 _ADVANCE_KW = ("提前批", "提前招", "预招聘", "预招", "开放日", "体验营", "训练营", "夏令营")
 _AUTUMN_KW = ("秋招", "秋季招聘", "秋季校园招聘", "正式批")
@@ -47,20 +47,25 @@ def score_job(job: Job, profile: Dict) -> ScoreResult:
     tags: List[str] = []
 
     # 专业匹配（关键词命中**封顶**：防止 JD 堆词把无名小公司刷到第一）
-    must = [k for k in profile.get("must_keywords", []) if k.lower() in text]
-    nice = [k for k in profile.get("nice_keywords", []) if k.lower() in text]
-    neg = [k for k in profile.get("negative_keywords", []) if k.lower() in text]
+    must = [k for k in profile.get("must_keywords", []) if keyword_match(k, text)]
+    nice = [k for k in profile.get("nice_keywords", []) if keyword_match(k, text)]
+    neg = [k for k in profile.get("negative_keywords", []) if keyword_match(k, job.title)]
     score += min(len(must), 4) * 12 + min(len(nice), 3) * 5 - len(neg) * 20
     tags += must[:4] + nice[:3]
 
     # 目标岗位名直接命中（对口是硬指标）
-    if any(r.lower() in job.title.lower() for r in profile.get("target_roles", [])):
+    if any(keyword_match(r, job.title) for r in profile.get("target_roles", [])):
         score += 25
         tags.append("role_match")
 
     role_score, role_tags = role_signal_score(job.title, job.jd_text)
     score += role_score
     tags += role_tags
+    if not role_tags:
+        score -= 45
+    if has_target_role_signal(job.title) and ("医疗" in text or "生物医学工程" in text):
+        score += 15
+        tags.append("医工匹配")
 
     # 27届周期信号：提前批/秋招/春招/暑期实习是当前主线，适度加权但不压过岗位匹配。
     cycle_text = (job.title + " " + job.jd_text).lower()
@@ -68,6 +73,9 @@ def score_job(job: Job, profile: Dict) -> ScoreResult:
     if is_c27:
         score += 18
         tags.append("27届")
+    if any(k in cycle_text for k in ("2028届", "2028 届", "28届", "28 届", "2028校园", "2028校招")):
+        score += 18
+        tags.append("28届")
     has_advance = any(k.lower() in cycle_text for k in _ADVANCE_KW)
     if has_advance:
         score += 10
@@ -80,7 +88,7 @@ def score_job(job: Job, profile: Dict) -> ScoreResult:
         tags.append("春招/补录")
     if any(k.lower() in cycle_text for k in _SUMMER_KW):
         score += 6
-        tags.append("暑期实习")
+        tags.append("实习")
     if any(k.lower() in cycle_text for k in _CONVERT_KW):
         score += 6
         tags.append("可转正")
@@ -96,7 +104,7 @@ def score_job(job: Job, profile: Dict) -> ScoreResult:
     # 否则人社部/高校聚合源里的民营小公司会被误判成"事业单位"而虚高）。用户最看重此维度。
     tier, boost = employer_tier(job.company_name, job.industry, job.source_id or "")
     if tier:
-        score += boost
+        score += min(boost, 15) if role_tags else 0
         tags.append(tier)
 
     # 城市匹配
@@ -104,6 +112,9 @@ def score_job(job: Job, profile: Dict) -> ScoreResult:
     if job_city and any(normalize_city(c) == job_city for c in profile.get("cities", [])):
         score += 10
         tags.append("city_match")
+        if job_city in ("深圳", "广州", "东莞", "珠海"):
+            score += 10
+            tags.append("大湾区")
 
     # 地点可达性：国外岗位（地点无中文 且 非远程）对国内求职者基本投不了 → 降权。
     # 中文地点（国内大厂/央国企/高校）与远程岗不受影响。offshore_penalty=0 可关闭。
@@ -147,6 +158,9 @@ def score_job(job: Job, profile: Dict) -> ScoreResult:
     # 央国企公告"报名截止已过"等时间相关风险：依赖 today，交调用方判定，
     # 此处不计，保持纯函数可复现。
 
+    # 公司、行业与届别不能把纯销售/产品等无目标角色岗位抬成高匹配。
+    if not role_tags:
+        score = min(score, 59)
     return ScoreResult(score=max(0, score),
                        tags=list(dict.fromkeys(tags)),
                        risk_flags=risk)

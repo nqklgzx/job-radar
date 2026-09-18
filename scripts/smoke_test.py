@@ -106,8 +106,8 @@ def test_jsonld_offline() -> None:
 def test_config_and_quality_offline() -> None:
     print("\n[E] 配置化补抓 / adapter 自动发现 / 质量降噪")
     kws = keyword_config.iguopin_keywords()
-    check("国聘补抓关键词含 2027 周期词", any(k in kws for k in ("2027", "27届")), str(kws[:8]))
-    check("国聘补抓关键词含算法/产品/决策方向", all(k in kws for k in ("算法", "AI产品", "战略分析")),
+    check("国聘补抓关键词含 2027 周期词", any("2027" in k for k in kws), str(kws[:8]))
+    check("国聘补抓关键词含嵌入式/医疗/硬件方向", all(k in kws for k in ("嵌入式", "医疗电子", "硬件研发")),
           str(kws[:12]))
     adapters = set(list_adapters())
     check("adapter 自动发现包含国聘", "iguopin" in adapters, str(sorted(adapters)[:8]))
@@ -127,6 +127,48 @@ def test_config_and_quality_offline() -> None:
 
 
 # ---------- A. 真实抓取验证（网络，允许个别源失败）----------
+def test_embedded_offline() -> None:
+    from job_radar.score import score_job
+    from job_radar.role_rules import keyword_match
+    from job_radar import workbench_rules as wr
+    from scripts import notify_preview as notify
+    from unittest.mock import patch
+    from datetime import date, timedelta
+    profile = next(iter(json.load(open(sync.PROFILES_JSON, encoding="utf-8")).values()))
+    rows = []
+    for title in ("医疗器械嵌入式软件工程师", "STM32 固件工程师", "MCU 开发工程师", "医疗电子研发工程师", "售后技术支持 + 嵌入式研发"):
+        job = Job(job_id=title, dedup_key=title, source_id="test", company_name="测试企业",
+                  title=title, location="深圳", source_confidence=100)
+        result = score_job(job, profile)
+        check(title + " 高匹配", result.score >= 80, str(result.score))
+        job.match_score, job.tags = result.score, result.tags
+        rows.append(job.to_dict())
+    for title in ("Java 后端", "销售", "产品运营"):
+        job = Job(job_id=title, dedup_key=title, source_id="test", company_name="测试企业",
+                  title=title, jd_text="2027届 医疗器械 STM32 C++", location="深圳", source_confidence=100)
+        check(title + " 明显降权", score_job(job, profile).score < 60)
+    check("裸 C 不识别为语言", not keyword_match("C", "C 类客户"))
+    check("明确 C 语言可识别", keyword_match("C", "熟悉 C 语言和 C/C++"))
+    check("CAN 不命中英文单词", not keyword_match("CAN", "We cannot do this"))
+    check("实际 CAN 技能识别", keyword_match("CAN", "掌握CAN总线"))
+    check("不按日期推测届别", not wr.is_2027_cycle("cn-tencent-campus", "校招", "嵌入式工程师", "", "2026-09-18", "秋招"))
+    check("日常实习不是暑期", wr.stage("日常实习 嵌入式", "") == "日常实习")
+    check("无届别的目标岗可推送", notify.is_focus_job(rows[0], 80, 80))
+    for row in rows:
+        row.update(first_seen=date.today().isoformat(), official_url="https://example.com/job", deadline="")
+    expired = dict(rows[0], dedup_key="expired", deadline=(date.today()-timedelta(days=1)).isoformat())
+    path = os.path.join(TMP_OUT, "notify_jobs.json")
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(rows + [expired], f, ensure_ascii=False)
+    state = os.path.join(TMP_OUT, "notify_state.json")
+    with patch.object(notify, "JOBS", path):
+        _, selected = notify.build(state_path=state)
+        check("推送排除已截止岗位", selected and all(j["dedup_key"] != "expired" for j in selected))
+        notify.mark_pushed(state, selected)
+        _, repeated = notify.build(state_path=state)
+        check("已推送岗位不重复", not ({j["dedup_key"] for j in selected} & {j["dedup_key"] for j in repeated}))
+
+
 def test_live_fetch() -> None:
     print("\n[A] 真实抓取（海外 ATS，网络）")
     stable = {"greenhouse", "lever", "ashby"}
@@ -157,6 +199,7 @@ if __name__ == "__main__":
     test_dedup_offline()
     test_jsonld_offline()
     test_config_and_quality_offline()
+    test_embedded_offline()
     try:
         test_live_fetch()
         test_health_report()
