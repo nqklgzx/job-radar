@@ -1617,8 +1617,50 @@
       "company": "北京平治东方科技股份有限公司",
       "title": "BSP驱动开发实习生",
       "source_id": "gov-ncss"
+    },
+    "1a010ebbcd5e0860": {
+      "pushed_at": "2026-09-19T00:53:32.524344+00:00",
+      "first_seen": "2026-09-19T00:46:10.817591+00:00",
+      "company": "四川灵通电讯有限公司",
+      "title": "FPGA（无线方向）",
+      "source_id": "cn-iguopin"
+    },
+    "37b4b62d31e3760c": {
+      "pushed_at": "2026-09-19T00:53:32.524344+00:00",
+      "first_seen": "2026-09-19T00:46:10.817591+00:00",
+      "company": "四川灵通电讯有限公司",
+      "title": "FPGA（有线方向）",
+      "source_id": "cn-iguopin"
+    },
+    "556306d55b501540": {
+      "pushed_at": "2026-09-19T00:53:32.524344+00:00",
+      "first_seen": "2026-09-19T00:46:10.817591+00:00",
+      "company": "智能汽车制造产业链专项引才计划",
+      "title": "嵌入式软件工程师",
+      "source_id": "cn-iguopin"
+    },
+    "0ce5bef5bc06cabc": {
+      "pushed_at": "2026-09-19T00:53:32.524344+00:00",
+      "first_seen": "2026-09-19T00:46:10.817591+00:00",
+      "company": "智能汽车制造产业链专项引才计划",
+      "title": "电子工程师硬件",
+      "source_id": "cn-iguopin"
+    },
+    "d3a6ee8661578485": {
+      "pushed_at": "2026-09-19T00:53:32.524344+00:00",
+      "first_seen": "2026-09-19T00:46:10.817591+00:00",
+      "company": "美团",
+      "title": "硬件项目管理",
+      "source_id": "cn-meituan-campus"
+    },
+    "b680ab7c053f04cc": {
+      "pushed_at": "2026-09-19T00:53:32.524344+00:00",
+      "first_seen": "2026-09-19T00:46:10.817591+00:00",
+      "company": "美团",
+      "title": "骑行-硬件采购",
+      "source_id": "cn-meituan-campus"
     }
   },
-  "last_marked_at": "2026-09-18T09:51:21.509002+00:00",
-  "last_marked_count": 14
+  "last_marked_at": "2026-09-19T00:53:32.524344+00:00",
+  "last_marked_count": 6
 }
