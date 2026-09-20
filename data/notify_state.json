@@ -1659,8 +1659,22 @@
       "company": "美团",
       "title": "骑行-硬件采购",
       "source_id": "cn-meituan-campus"
+    },
+    "8f9e9e08ac0c5a9a": {
+      "pushed_at": "2026-09-20T00:38:05.176458+00:00",
+      "first_seen": "2026-09-20T00:29:35.158677+00:00",
+      "company": "字节跳动",
+      "title": "GPU/异构计算硬件选型与应用工程师-Data（北京）",
+      "source_id": "cn-bytedance"
+    },
+    "6ab11457449f3921": {
+      "pushed_at": "2026-09-20T00:38:05.176458+00:00",
+      "first_seen": "2026-09-20T00:29:35.158677+00:00",
+      "company": "中国科学院力学研究所",
+      "title": "控制工程方向支撑岗",
+      "source_id": "cn-iguopin"
     }
   },
-  "last_marked_at": "2026-09-19T00:53:32.524344+00:00",
-  "last_marked_count": 6
+  "last_marked_at": "2026-09-20T00:38:05.176458+00:00",
+  "last_marked_count": 2
 }
