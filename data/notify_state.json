@@ -1673,8 +1673,15 @@
       "company": "中国科学院力学研究所",
       "title": "控制工程方向支撑岗",
       "source_id": "cn-iguopin"
+    },
+    "78c577ca3649ffa8": {
+      "pushed_at": "2026-09-20T07:08:02.884758+00:00",
+      "first_seen": "2026-09-20T07:02:22.703757+00:00",
+      "company": "实习僧",
+      "title": "嵌入式（实习岗位）",
+      "source_id": "sxs-intern"
     }
   },
-  "last_marked_at": "2026-09-20T00:38:05.176458+00:00",
-  "last_marked_count": 2
+  "last_marked_at": "2026-09-20T07:08:02.884758+00:00",
+  "last_marked_count": 1
 }
