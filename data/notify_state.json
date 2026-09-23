@@ -1890,8 +1890,15 @@
       "company": "北京奇策科技有限公司",
       "title": "FPGA工程师",
       "source_id": "gov-ncss"
+    },
+    "961d43feb0cf39bb": {
+      "pushed_at": "2026-09-23T06:44:26.731673+00:00",
+      "first_seen": "2026-09-23T06:40:03.212121+00:00",
+      "company": "牛客网·实习",
+      "title": "嵌入式软件开发实习生",
+      "source_id": "nk-intern"
     }
   },
-  "last_marked_at": "2026-09-23T01:11:18.152111+00:00",
-  "last_marked_count": 8
+  "last_marked_at": "2026-09-23T06:44:26.731673+00:00",
+  "last_marked_count": 1
 }
