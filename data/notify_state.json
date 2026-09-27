@@ -2100,8 +2100,22 @@
       "company": "字节跳动",
       "title": "网络硬件质量工程师-光方向",
       "source_id": "cn-bytedance"
+    },
+    "6234358b33c305d4": {
+      "pushed_at": "2026-09-27T07:10:15.997297+00:00",
+      "first_seen": "2026-09-27T07:05:45.479152+00:00",
+      "company": "实习僧",
+      "title": "嵌入式开发实习",
+      "source_id": "sxs-intern"
+    },
+    "f3072162bf1dc1e4": {
+      "pushed_at": "2026-09-27T07:10:15.997297+00:00",
+      "first_seen": "2026-09-27T07:05:45.479152+00:00",
+      "company": "实习僧",
+      "title": "嵌入式硬实习",
+      "source_id": "sxs-intern"
     }
   },
-  "last_marked_at": "2026-09-26T01:09:35.450569+00:00",
-  "last_marked_count": 1
+  "last_marked_at": "2026-09-27T07:10:15.997297+00:00",
+  "last_marked_count": 2
 }
