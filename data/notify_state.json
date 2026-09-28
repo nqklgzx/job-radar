@@ -2114,8 +2114,22 @@
       "company": "实习僧",
       "title": "嵌入式硬实习",
       "source_id": "sxs-intern"
+    },
+    "aa60c8858846c42d": {
+      "pushed_at": "2026-09-28T01:25:54.551207+00:00",
+      "first_seen": "2026-09-28T01:17:43.509339+00:00",
+      "company": "贵州航天风华精密设备有限公司",
+      "title": "嵌入式软件设计师",
+      "source_id": "cn-iguopin"
+    },
+    "d7f3f556b54fd12f": {
+      "pushed_at": "2026-09-28T01:25:54.551207+00:00",
+      "first_seen": "2026-09-28T01:17:43.509339+00:00",
+      "company": "天合光能股份有限公司",
+      "title": "嵌入式软件工程师",
+      "source_id": "cn-iguopin"
     }
   },
-  "last_marked_at": "2026-09-27T07:10:15.997297+00:00",
+  "last_marked_at": "2026-09-28T01:25:54.551207+00:00",
   "last_marked_count": 2
 }
