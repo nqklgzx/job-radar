@@ -2212,8 +2212,22 @@
       "company": "美团",
       "title": "软硬件服务财务-充电宝职能BP",
       "source_id": "cn-meituan-campus"
+    },
+    "e12fdc5be8d13190": {
+      "pushed_at": "2026-09-30T07:32:08.651634+00:00",
+      "first_seen": "2026-09-30T07:28:36.977948+00:00",
+      "company": "光本位智能科技（上海）股份有限公司",
+      "title": "硬件设计工程师（光计算方向）",
+      "source_id": "edu-fudan"
+    },
+    "73d2bcf5a130c929": {
+      "pushed_at": "2026-09-30T07:32:08.651634+00:00",
+      "first_seen": "2026-09-30T07:28:36.977948+00:00",
+      "company": "光本位智能科技（上海）股份有限公司",
+      "title": "硬件测试工程师",
+      "source_id": "edu-fudan"
     }
   },
-  "last_marked_at": "2026-09-30T01:53:24.988243+00:00",
-  "last_marked_count": 8
+  "last_marked_at": "2026-09-30T07:32:08.651634+00:00",
+  "last_marked_count": 2
 }
