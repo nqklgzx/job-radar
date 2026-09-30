@@ -2156,8 +2156,64 @@
       "company": "上海集成电路研发中心有限公司-浙江大学",
       "title": "专场",
       "source_id": "edu-zju"
+    },
+    "97c72523b9d4d02e": {
+      "pushed_at": "2026-09-30T01:53:24.988243+00:00",
+      "first_seen": "2026-09-30T01:43:57.193405+00:00",
+      "company": "深圳市安保医疗科技股份有限公司",
+      "title": "嵌入式软件工程师",
+      "source_id": "cn-iguopin"
+    },
+    "ab960caf6c9f875f": {
+      "pushed_at": "2026-09-30T01:53:24.988243+00:00",
+      "first_seen": "2026-09-30T01:43:57.193405+00:00",
+      "company": "恩智浦NXP",
+      "title": "2027Y Campus - Software Engineer - Linux BSP & Driver Development",
+      "source_id": "wd-nxp"
+    },
+    "7306602a7c96c50a": {
+      "pushed_at": "2026-09-30T01:53:24.988243+00:00",
+      "first_seen": "2026-09-30T01:43:57.193405+00:00",
+      "company": "东莞市无穹智能科技有限公司",
+      "title": "嵌入式开发（应用）",
+      "source_id": "cn-iguopin"
+    },
+    "588a26fb44b1c8e4": {
+      "pushed_at": "2026-09-30T01:53:24.988243+00:00",
+      "first_seen": "2026-09-30T01:43:57.193405+00:00",
+      "company": "深圳市朗坤科技股份有限公司",
+      "title": "硬件工程师（算力）",
+      "source_id": "cn-iguopin"
+    },
+    "56da16f5dc40f2ab": {
+      "pushed_at": "2026-09-30T01:53:24.988243+00:00",
+      "first_seen": "2026-09-30T01:43:57.193405+00:00",
+      "company": "雄安睿哲科技有限公司",
+      "title": "c++开发工程师（嵌入式）",
+      "source_id": "cn-iguopin"
+    },
+    "4d10d09e237f0771": {
+      "pushed_at": "2026-09-30T01:53:24.988243+00:00",
+      "first_seen": "2026-09-30T01:43:57.193405+00:00",
+      "company": "东莞市卓茂仪器有限公司",
+      "title": "DSP软件工程师（数字电源开发）",
+      "source_id": "cn-iguopin"
+    },
+    "f8595e025dda4d63": {
+      "pushed_at": "2026-09-30T01:53:24.988243+00:00",
+      "first_seen": "2026-09-30T01:43:57.193405+00:00",
+      "company": "飞亚达精密科技股份有限公司",
+      "title": "电机驱动工程师",
+      "source_id": "cn-iguopin"
+    },
+    "811a3423229c69c1": {
+      "pushed_at": "2026-09-30T01:53:24.988243+00:00",
+      "first_seen": "2026-09-30T01:43:57.193405+00:00",
+      "company": "美团",
+      "title": "软硬件服务财务-充电宝职能BP",
+      "source_id": "cn-meituan-campus"
     }
   },
-  "last_marked_at": "2026-09-29T02:31:00.401454+00:00",
-  "last_marked_count": 4
+  "last_marked_at": "2026-09-30T01:53:24.988243+00:00",
+  "last_marked_count": 8
 }
