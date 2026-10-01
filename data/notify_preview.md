@@ -1,20 +1,26 @@
-# Job Radar｜2026-09-30 新增机会
+# Job Radar｜2026-10-01 新增机会
 
-未推新增 693 条，其中 2027/2028届 29 条。
-高匹配岗位 2 条；医疗器械研发 0 条；7天内截止 0 条。
-已自动过滤历史推送 13 条。
+未推新增 340 条，其中 2027/2028届 16 条。
+高匹配岗位 4 条；医疗器械研发 0 条；7天内截止 0 条。
+已自动过滤历史推送 6 条。
 
 信息台：https://nqklgzx.github.io/job-radar/
 
 线索池：牛客待审核 138 条；信源需关注 10 个。
 
 ## 新增优先看
-- 光本位智能科技（上海）股份有限公司｜硬件设计工程师（光计算方向）
-  硬件研发｜匹配 96｜缺截止
-  https://career.fudan.edu.cn/Zhaopin/zhiweiDetail.html?jobtype=1&id=6b17e7fd-1f21-4d1c-8fb5-e2436e0d0dc7
-- 光本位智能科技（上海）股份有限公司｜硬件测试工程师
-  硬件研发｜匹配 96｜缺截止
-  https://career.fudan.edu.cn/Zhaopin/zhiweiDetail.html?jobtype=1&id=ca17c64e-81e8-c30f-0792-005a106e80b4
+- 航天亮丽电气有限责任公司｜嵌入式软件工程师
+  嵌入式软件｜匹配 157｜2026-12-31，剩 91 天
+  https://www.iguopin.com/job/detail?id=220535976861107201
+- 贵州航天南海科技有限责任公司｜嵌入式软件工程师
+  嵌入式软件｜匹配 147｜2027-08-31，剩 334 天
+  https://www.iguopin.com/job/detail?id=214934044691924339
+- 东莞市卓茂仪器有限公司｜嵌入式软件工程师
+  嵌入式软件｜匹配 137｜2026-10-23，剩 22 天
+  https://www.iguopin.com/job/detail?id=220354153883370495
+- 西安航天自动化股份有限公司｜PLC Runtime 开发工程师（嵌入式 / 实时内核方向）
+  嵌入式软件｜匹配 127｜2026-12-28，剩 88 天
+  https://www.iguopin.com/job/detail?id=220497759235474422
 
 ## 新增医疗器械研发
 - 暂无
@@ -23,9 +29,4 @@
 - 暂无
 
 ## 新增待补截止
-- 光本位智能科技（上海）股份有限公司｜硬件设计工程师（光计算方向）
-  硬件研发｜匹配 96｜缺截止
-  https://career.fudan.edu.cn/Zhaopin/zhiweiDetail.html?jobtype=1&id=6b17e7fd-1f21-4d1c-8fb5-e2436e0d0dc7
-- 光本位智能科技（上海）股份有限公司｜硬件测试工程师
-  硬件研发｜匹配 96｜缺截止
-  https://career.fudan.edu.cn/Zhaopin/zhiweiDetail.html?jobtype=1&id=ca17c64e-81e8-c30f-0792-005a106e80b4
+- 暂无
