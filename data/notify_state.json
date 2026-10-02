@@ -2254,8 +2254,29 @@
       "company": "西安航天自动化股份有限公司",
       "title": "PLC Runtime 开发工程师（嵌入式 / 实时内核方向）",
       "source_id": "cn-iguopin"
+    },
+    "6114149b22c0c1a0": {
+      "pushed_at": "2026-10-02T02:00:29.832876+00:00",
+      "first_seen": "2026-10-02T01:52:30.986940+00:00",
+      "company": "中煤科工集团重庆研究院有限公司",
+      "title": "AIoT嵌入式硬件工程师",
+      "source_id": "cn-iguopin"
+    },
+    "9e4d36e27d8acea3": {
+      "pushed_at": "2026-10-02T02:00:29.832876+00:00",
+      "first_seen": "2026-10-02T01:52:30.986940+00:00",
+      "company": "广东博力威科技股份有限公司",
+      "title": "嵌入式软件工程师",
+      "source_id": "cn-iguopin"
+    },
+    "b0fdbb4ae985b36c": {
+      "pushed_at": "2026-10-02T02:00:29.832876+00:00",
+      "first_seen": "2026-10-02T01:52:30.986940+00:00",
+      "company": "深圳市巨烽显示科技有限公司",
+      "title": "软件工程师 (嵌入式)",
+      "source_id": "gov-ncss"
     }
   },
-  "last_marked_at": "2026-10-01T01:49:29.233872+00:00",
-  "last_marked_count": 4
+  "last_marked_at": "2026-10-02T02:00:29.832876+00:00",
+  "last_marked_count": 3
 }
