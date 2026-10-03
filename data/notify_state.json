@@ -2275,8 +2275,15 @@
       "company": "深圳市巨烽显示科技有限公司",
       "title": "软件工程师 (嵌入式)",
       "source_id": "gov-ncss"
+    },
+    "2647baea4266d0be": {
+      "pushed_at": "2026-10-03T01:41:38.563197+00:00",
+      "first_seen": "2026-10-03T01:33:00.209537+00:00",
+      "company": "北京计算机技术及应用研究所",
+      "title": "嵌入式软件工程师",
+      "source_id": "cn-iguopin"
     }
   },
-  "last_marked_at": "2026-10-02T02:00:29.832876+00:00",
-  "last_marked_count": 3
+  "last_marked_at": "2026-10-03T01:41:38.563197+00:00",
+  "last_marked_count": 1
 }
